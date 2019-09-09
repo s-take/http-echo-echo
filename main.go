@@ -18,17 +18,12 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", index)
-	mux.HandleFunc("/dump", dumprequest)
 	mux.HandleFunc("/slow", slowrequest)
 	log.Fatal(http.ListenAndServe(":8081", mux))
 
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "This is echoecho service\n")
-}
-
-func dumprequest(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "This is echoecho service\n")
 
 	dump, _ := httputil.DumpRequest(r, true)
@@ -37,7 +32,7 @@ func dumprequest(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "\n")
 
 	// Request
-	u := url + "/dump"
+	u := url
 	req, _ := http.NewRequest("GET", u, nil)
 
 	dumpReq, _ := httputil.DumpRequestOut(req, true)
