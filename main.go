@@ -37,8 +37,8 @@ func dumprequest(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "\n")
 
 	// Request
-	url = url + "/dump"
-	req, _ := http.NewRequest("GET", url, nil)
+	u := url + "/dump"
+	req, _ := http.NewRequest("GET", u, nil)
 
 	dumpReq, _ := httputil.DumpRequestOut(req, true)
 	io.WriteString(w, "===DumpRequestOut===\n")
@@ -49,6 +49,7 @@ func dumprequest(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer resp.Body.Close()
 
 	dumpResp, _ := httputil.DumpResponse(resp, true)
 	io.WriteString(w, "===DumpResponse===\n")
@@ -60,13 +61,15 @@ func slowrequest(w http.ResponseWriter, r *http.Request) {
 
 	io.WriteString(w, "This is echoecho service\n")
 	// Request
-	url = url + "/wait"
-	req, _ := http.NewRequest("GET", url, nil)
+	u := url + "/wait"
+	req, _ := http.NewRequest("GET", u, nil)
 	client := new(http.Client)
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer resp.Body.Close()
+
 	dumpResp, _ := httputil.DumpResponse(resp, true)
 	io.WriteString(w, "===DumpResponse===\n")
 	io.WriteString(w, string(dumpResp))
