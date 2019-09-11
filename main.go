@@ -14,7 +14,7 @@ var (
 )
 
 var client = http.Client{
-	Timeout: time.Millisecond * 3000,
+	Timeout: time.Millisecond * 30000,
 }
 
 func main() {
