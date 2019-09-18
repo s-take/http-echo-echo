@@ -17,6 +17,16 @@ var client = http.Client{
 	Timeout: time.Millisecond * 30000,
 }
 
+var headers = []string{
+	"x-request-id",
+	"x-b3-traceid",
+	"x-b3-spanid",
+	"x-b3-parentspanid",
+	"x-b3-sampled",
+	"x-b3-flags",
+	"x-ot-span-context",
+}
+
 func main() {
 	flag.StringVar(&url, "url", "http://localhost:8080", "setting get url")
 	flag.Parse()
@@ -43,6 +53,13 @@ func dump(w http.ResponseWriter, r *http.Request) {
 	// Request
 	u := url
 	req, _ := http.NewRequest("GET", u, nil)
+	// add trace header
+	for _, header := range headers {
+		if r.Header.Get(header) != "" {
+			req.Header.Add(header, r.Header.Get(header))
+		}
+	}
+
 	dumpReq, _ := httputil.DumpRequestOut(req, true)
 	io.WriteString(w, "===DumpRequestOut===\n")
 	io.WriteString(w, string(dumpReq))
